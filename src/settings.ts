@@ -7,6 +7,7 @@ import { DEFAULT_WEEK_FORMAT, DEFAULT_WORDS_PER_DOT } from "src/constants";
 import type CalendarPlugin from "./main";
 
 export interface ISettings {
+  useChineseWordCount: boolean;
   wordsPerDot: number;
   weekStart: IWeekStartOption;
   shouldConfirmBeforeCreate: boolean;
@@ -35,6 +36,8 @@ export const defaultSettings = Object.freeze({
   weekStart: "locale" as IWeekStartOption,
 
   wordsPerDot: DEFAULT_WORDS_PER_DOT,
+
+  useChineseWordCount: false,
 
   showWeeklyNote: false,
   weeklyNoteFormat: "",
@@ -78,6 +81,23 @@ export class CalendarSettingsTab extends PluginSettingTab {
       text: "General Settings",
     });
     this.addDotThresholdSetting();
+    // === 插入的新开关 ===
+    new Setting(this.containerEl)
+      .setName("开启中文精准计数 (Chinese Word Count)")
+      .setDesc("启用混合统计逻辑：汉字算1词，英文按单词统计，不计标点。开启后建议调低'Words per dot'。")
+      .addToggle((toggle) => {
+        // 读取当前值 (注意：如果报错，请试着把 options 改成 settings)
+        toggle.setValue(this.plugin.options.useChineseWordCount); 
+        toggle.onChange(async (value) => {
+          // 保存新值
+          this.plugin.writeOptions((old) => {
+    old.useChineseWordCount = value;
+    return old; // 👈 关键在这里：要把修改后的对象返回去
+});
+          // 这一步是为了让日历刷新一下，虽然它通常会自动刷新
+        });
+      });
+    // ==================
     this.addWeekStartSetting();
     this.addConfirmCreateSetting();
     this.addShowWeeklyNoteSetting();

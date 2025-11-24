@@ -12,13 +12,18 @@ import { clamp, getWordCount } from "../utils";
 const NUM_MAX_DOTS = 5;
 
 export async function getWordLengthAsDots(note: TFile): Promise<number> {
-  const { wordsPerDot = DEFAULT_WORDS_PER_DOT } = get(settings);
+  // 1. 【修改】解构出 useChineseWordCount
+  // (如果 useChineseWordCount 报红线，就在分号前加个 " as any" )
+  const { wordsPerDot = DEFAULT_WORDS_PER_DOT, useChineseWordCount } = get(settings);
+
   if (!note || wordsPerDot <= 0) {
     return 0;
   }
   const fileContents = await window.app.vault.cachedRead(note);
 
-  const wordCount = getWordCount(fileContents);
+  // 2. 【修改】把开关状态传给 getWordCount
+  const wordCount = getWordCount(fileContents, useChineseWordCount);
+  
   const numDots = wordCount / wordsPerDot;
   return clamp(Math.floor(numDots), 1, NUM_MAX_DOTS);
 }

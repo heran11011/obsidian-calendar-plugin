@@ -1,11 +1,10 @@
 {
-  "id": "calendar",
-  "name": "Calendar",
-  "description": "Calendar view of your daily notes",
-  "version": "1.5.10",
-  "author": "Liam Cain",
-  "authorUrl": "https://github.com/liamcain/",
-  "fundingUrl": "https://www.buymeacoffee.com/liamcain",
+  "id": "calendar-chinese-enhanced",
+  "name": "Calendar (中文增强版)",
+  "description": "基于原版 Calendar 插件修改，支持精准的中文/英文混合字数统计，含自定义开关。",
+  "version": "1.6.0",
+  "author": "Anya",
+  "authorUrl": "https://github.com/heran11011",
   "isDesktopOnly": false,
   "minAppVersion": "0.9.11"
 }
