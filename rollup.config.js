@@ -1,30 +1,35 @@
-import svelte from "rollup-plugin-svelte";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
-import autoPreprocess from "svelte-preprocess";
-import { env } from "process";
+// 1. 引入新插件 (注意这里改成了 rollup-plugin-typescript2)
+import typescript from 'rollup-plugin-typescript2';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import svelte from 'rollup-plugin-svelte';
+import autoPreprocess from 'svelte-preprocess';
 
 export default {
-  input: "src/main.ts",
+  input: 'src/main.ts',
   output: {
-    format: "cjs",
-    file: "main.js",
-    exports: "default",
+    file: 'main.js',
+    sourcemap: true, // <--- 改成 true！Rollup 会自动生成独立的 .map 文件
+    format: 'cjs',
+    exports: 'default',
   },
-  external: ["obsidian", "fs", "os", "path"],
+  external: ['obsidian'],
   plugins: [
     svelte({
-      emitCss: false,
       preprocess: autoPreprocess(),
+      emitCss: false,
     }),
-    typescript({ sourceMap: env.env === "DEV" }),
     resolve({
       browser: true,
-      dedupe: ["svelte"],
+      dedupe: ['svelte'],
     }),
-    commonjs({
-      include: "node_modules/**",
+    commonjs(),
+    // 2. 使用新插件配置
+    typescript({
+      // 删掉了 tsconfig: './tsconfig.json' 这一行，让它自动查找
+      clean: true, 
+      check: false,
+      verbosity: 2 // 让它多吐点信息，万一报错方便看
     }),
   ],
 };

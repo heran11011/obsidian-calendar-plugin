@@ -1,13 +1,28 @@
 {
-  "extends": "@tsconfig/svelte/tsconfig.json",
-
   "include": ["src/**/*"],
   "exclude": ["node_modules/*"],
   "compilerOptions": {
-    "types": ["node", "svelte", "jest"],
+    // 1. 基础编译设置 (代替原来的继承)
+    "moduleResolution": "node",
+    "target": "es2017",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // 2. 插件开发特定设置
+    "types": ["node", "jest", "svelte"],
     "baseUrl": ".",
     "paths": {
       "src": ["src/*"]
-    }
+    },
+    
+    // 3. 解决 TS 5.0 报错的关键
+    "verbatimModuleSyntax": true,
+    
+    // 4. 允许导入 JSON
+    "resolveJsonModule": true
   }
 }
