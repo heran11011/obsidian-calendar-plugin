@@ -1,57 +1,69 @@
 [English](./README_EN.md) | **简体中文**
 
-[English](./README_EN.md) | **简体中文**
-
 <h1 align="center">Calendar (中文增强版)</h1>
 
 <p align="center">
-  专为中文 Obsidian 用户打造的日历插件，支持精准的汉字计数与混合统计模式。
+  专为中文 Obsidian 用户打造的日历插件。<br>
+  支持<b>精准汉字计数</b>、<b>自定义满分点数</b>，以及<b>混合统计模式</b>。
 </p>
 
 ---
 
-## 🌟 为什么做这个插件？
+## 🌟 为什么会有这个版本？
 
-原版 Calendar 插件在统计字数时，只支持以空格分隔的英文单词。对于中文用户来说，这意味着写了 1000 字的日记，日历上却只显示 1 个小圆点（因为没有空格）。
+原版 Calendar 插件是 Obsidian 社区的神器，但它对中文用户不够友好：它只通过空格来计算单词数。这意味着我们写了长篇大论的中文日记，日历上却往往只有可怜的一颗小圆点。
 
-本插件**重构了核心计数逻辑**，完美解决了这个问题。
+**本插件旨在解决这个问题，并增加了更多人性化的自定义选项。**
 
 ## ✨ 核心功能
 
-1.  **精准中文计数**：
-    - 移除 YAML 属性干扰。
-    - 汉字：1 个字算 1 词。
-    - 英文/数字：按单词统计。
-    - 标点符号：不计入（只计算干货）。
-    
-2.  **双模切换开关**：
-    - 在设置面板中，你可以随时开启或关闭“中文精准计数”模式。
-    - 关闭时，完全还原原版插件的逻辑。
+### 1. 🇨🇳 中文精准计数
+不再只是数空格！本插件内置了专门针对中文优化的算法：
+- **汉字**：1 个字 = 1 计数。
+- **英文/数字**：连续的字母/数字 = 1 计数。
+- **智能过滤**：自动忽略标点符号、YAML 文档属性 (`---...---`) 和 Markdown 符号。
 
-3.  **完美适配**：
-    - 修复了原版在 Windows 环境下的构建问题。
-    - 升级了底层依赖，更稳定、更流畅。
+### 2. 🎛️ 只有你能定义的“满分”
+每个人每天的产出量不同，固定的“5 颗点”满分标准太死板。
+- 新增 **"满分点数 (Max Dots)"** 滑块。
+- 支持设置 **1 到 10** 颗圆点上限。
+- 你可以定义属于自己的“完美一天”。
 
-## 🚀 如何安装
+### 3. 🔄 双模切换
+- 在设置面板中，你可以随时开启或关闭“中文精准计数”模式。
+- 关闭时，逻辑与原版插件完全一致（无缝兼容）。
 
-### 方法一：BRAT (推荐，支持自动更新)
-1. 在 Obsidian 社区插件中安装 **BRAT**。
-2. 在 BRAT 设置中点击 "Add Beta plugin"。
+---
+
+## 🚀 安装方法
+
+### 方法一：使用 BRAT 插件 (强烈推荐)
+这是最简单的自动更新方式：
+1. 在 Obsidian 社区插件市场安装 **BRAT**。
+2. 在 BRAT 设置中点击 `Add Beta plugin`。
 3. 输入本仓库地址：`https://github.com/heran11011/obsidian-calendar-plugin`
 4. 启用插件即可。
 
 ### 方法二：手动安装
-1. 在 [Releases](https://github.com/heran11011/obsidian-calendar-plugin/releases) 页面下载 `main.js`, `manifest.json`, `styles.css`。
-2. 放入 `你的仓库/.obsidian/plugins/calendar-chinese-enhanced/` 文件夹。
-3. 重启 Obsidian 并启用。
+1. 前往 [Releases](https://github.com/heran11011/obsidian-calendar-plugin/releases) 页面。
+2. 下载 `main.js`, `manifest.json`, `styles.css` 三个文件。
+3. 在你的 Obsidian 库中，进入 `.obsidian/plugins/` 目录。
+4. 新建文件夹 `calendar-chinese-enhanced`，将文件放入。
+5. 重启 Obsidian 并启用。
+
+---
 
 ## ⚙️ 推荐设置
 
-开启中文模式后，由于统计标准变严格了（去掉了标点水分），建议调整阈值：
+为了获得最佳体验，建议安装后进行如下设置：
 
-- **设置** -> **Calendar**
-- **开启中文精准计数**：✅ 开启
-- **Words per dot (每颗点的字数)**：建议设置为 **200** 或 **250**。
+1. **开启中文精准计数**：✅ 开启
+2. **Words per dot (每颗点的字数)**：建议设置为 **200** 左右（因为去掉了标点水分，建议比平时设低一点）。
+3. **满分点数 (Max Dots)**：
+   - 喜欢成就感？设为 **3** 或 **5**。
+   - 喜欢记录肝度？设为 **10**。
 
 ---
-*Forked from [Liam Cain's Calendar Plugin](https://github.com/liamcain/obsidian-calendar-plugin).*
+
+## 🙏 致谢
+本插件 Fork 自 [Liam Cain](https://github.com/liamcain) 的杰作 [Calendar Plugin](https://github.com/liamcain/obsidian-calendar-plugin)。感谢原作者的开源精神！

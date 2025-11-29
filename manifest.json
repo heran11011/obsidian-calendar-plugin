@@ -2,7 +2,7 @@
   "id": "calendar-chinese-enhanced",
   "name": "Calendar (中文增强版)",
   "description": "基于原版 Calendar 插件修改，支持精准的中文/英文混合字数统计，含自定义开关。",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "author": "heran11011",
   "authorUrl": "https://github.com/heran11011",
   "isDesktopOnly": false,
