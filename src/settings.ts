@@ -8,6 +8,7 @@ import type CalendarPlugin from "./main";
 
 export interface ISettings {
   useChineseWordCount: boolean;
+  maxDots: number; // 满分是几颗星
   wordsPerDot: number;
   weekStart: IWeekStartOption;
   shouldConfirmBeforeCreate: boolean;
@@ -32,6 +33,7 @@ const weekdays = [
 ];
 
 export const defaultSettings = Object.freeze({
+  maxDots: 5, // 满分是5颗星
   shouldConfirmBeforeCreate: true,
   weekStart: "locale" as IWeekStartOption,
 
@@ -98,6 +100,23 @@ export class CalendarSettingsTab extends PluginSettingTab {
         });
       });
     // ==================
+    // === 新增：满分点数设置 ===
+    new Setting(this.containerEl)
+      .setName("满分点数 (Max Dots)")
+      .setDesc("设置日历格子下方最多显示多少颗圆点。")
+      .addSlider((slider) => {
+        slider
+          .setLimits(1, 10, 1) // 最小值1，最大值10，步长1
+          .setValue(this.plugin.options.maxDots)
+          .setDynamicTooltip() // 拖动时显示数字
+          .onChange(async (value) => {
+            this.plugin.writeOptions((old) => {
+              old.maxDots = value;
+              return old;
+            });
+          });
+      });
+    // ========================
     this.addWeekStartSetting();
     this.addConfirmCreateSetting();
     this.addShowWeeklyNoteSetting();

@@ -14,7 +14,7 @@ const NUM_MAX_DOTS = 5;
 export async function getWordLengthAsDots(note: TFile): Promise<number> {
   // 1. 【修改】解构出 useChineseWordCount
   // (如果 useChineseWordCount 报红线，就在分号前加个 " as any" )
-  const { wordsPerDot = DEFAULT_WORDS_PER_DOT, useChineseWordCount } = get(settings);
+const { wordsPerDot = DEFAULT_WORDS_PER_DOT, useChineseWordCount, maxDots = 5 } = get(settings) as any;
 
   if (!note || wordsPerDot <= 0) {
     return 0;
@@ -25,7 +25,7 @@ export async function getWordLengthAsDots(note: TFile): Promise<number> {
   const wordCount = getWordCount(fileContents, useChineseWordCount);
   
   const numDots = wordCount / wordsPerDot;
-  return clamp(Math.floor(numDots), 1, NUM_MAX_DOTS);
+  return clamp(Math.floor(numDots), 1, maxDots);
 }
 
 export async function getDotsForDailyNote(
@@ -41,6 +41,7 @@ export async function getDotsForDailyNote(
     dots.push({
       color: "default",
       isFilled: true,
+      className:"",
     });
   }
   return dots;
