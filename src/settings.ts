@@ -20,6 +20,13 @@ export interface ISettings {
   weeklyNoteFolder: string;
 
   localeOverride: ILocaleOverride;
+
+  // ... 其他设置
+  moodColorHappy: string;
+  moodColorSad: string;
+  moodColorNeutral: string;
+  moodColorAngry: string;
+  moodColorEnergetic: string;
 }
 
 const weekdays = [
@@ -47,6 +54,13 @@ export const defaultSettings = Object.freeze({
   weeklyNoteFolder: "",
 
   localeOverride: "system-default",
+
+  // ... 其他默认值
+  moodColorHappy: "#FFB7B2",
+  moodColorSad: "#A0C4FF",
+  moodColorNeutral: "#B5EAD7",
+  moodColorAngry: "#FF6B6B",
+  moodColorEnergetic: "#FDFFB6",
 });
 
 export function appHasPeriodicNotesPluginLoaded(): boolean {
@@ -62,6 +76,22 @@ export class CalendarSettingsTab extends PluginSettingTab {
     super(app, plugin);
     this.plugin = plugin;
   }
+
+// 🎨 辅助函数：把设置里的颜色应用到 CSS 变量
+  applyMoodColors(): void {
+    const { moodColorHappy, moodColorSad, moodColorNeutral, moodColorAngry, moodColorEnergetic } = this.plugin.options;
+    
+    // 获取文档根节点
+    const root = document.body;
+    
+    // 设置 CSS 变量
+    root.style.setProperty('--mood-color-happy', moodColorHappy);
+    root.style.setProperty('--mood-color-sad', moodColorSad);
+    root.style.setProperty('--mood-color-neutral', moodColorNeutral);
+    root.style.setProperty('--mood-color-angry', moodColorAngry);
+    root.style.setProperty('--mood-color-energetic', moodColorEnergetic);
+  }
+
 
   display(): void {
     this.containerEl.empty();
@@ -116,6 +146,66 @@ export class CalendarSettingsTab extends PluginSettingTab {
             });
           });
       });
+      this.containerEl.createEl("h3", { text: "🎨 心情配色 (Mood Colors)" });
+
+    // 😊 开心颜色
+    new Setting(this.containerEl)
+      .setName("开心/哈哈哈哈 (Happy)")
+      .addColorPicker((color) => {
+        color.setValue(this.plugin.options.moodColorHappy)
+             .onChange(async (value) => {
+               this.plugin.writeOptions((old) => { old.moodColorHappy = value; return old; });
+               this.applyMoodColors(); // 实时预览：一改颜色马上生效
+             });
+      });
+
+    // 😔 难过颜色
+    new Setting(this.containerEl)
+      .setName("难过/宝宝不开心 (Sad)")
+      .addColorPicker((color) => {
+        color.setValue(this.plugin.options.moodColorSad)
+             .onChange(async (value) => {
+               this.plugin.writeOptions((old) => { old.moodColorSad = value; return old; });
+               this.applyMoodColors();
+             });
+      });
+      // 😐 平静颜色
+    new Setting(this.containerEl)
+      .setName("平静/心如止水 (Neutral)")
+      .addColorPicker((color) => {
+        color.setValue(this.plugin.options.moodColorNeutral)
+             .onChange(async (value) => {
+               this.plugin.writeOptions((old) => { old.moodColorNeutral = value; return old; });
+               this.applyMoodColors();
+             });
+      });
+
+    // 😡 生气颜色
+    new Setting(this.containerEl)
+      .setName("生气/特么的 (Angry)")
+      .addColorPicker((color) => {
+        color.setValue(this.plugin.options.moodColorAngry)
+             .onChange(async (value) => {
+               this.plugin.writeOptions((old) => { old.moodColorAngry = value; return old; });
+               this.applyMoodColors();
+             });
+      });
+
+    // ⚡ 活力颜色
+    new Setting(this.containerEl)
+      .setName("活力/冲冲冲 (Energetic)")
+      .addColorPicker((color) => {
+        color.setValue(this.plugin.options.moodColorEnergetic)
+             .onChange(async (value) => {
+               this.plugin.writeOptions((old) => { old.moodColorEnergetic = value; return old; });
+               this.applyMoodColors();
+             });
+      });
+    
+
+
+
+
     // ========================
     this.addWeekStartSetting();
     this.addConfirmCreateSetting();

@@ -70,7 +70,18 @@ export default class CalendarPlugin extends Plugin {
       callback: () => this.view.revealActiveNote(),
     });
 
+   // 等待设置加载完
     await this.loadOptions();
+
+    // 🎨 初始化心情颜色
+    // 因为 main.ts 里可能拿不到 SettingsTab 的实例，我们直接手动设置一次，或者更优雅地：
+    // 在 main.ts 里添加一个简单的 apply 函数
+    const root = document.body;
+    root.style.setProperty('--mood-color-happy', this.options.moodColorHappy);
+    root.style.setProperty('--mood-color-sad', this.options.moodColorSad);
+    root.style.setProperty('--mood-color-neutral', this.options.moodColorNeutral);
+    // ... 其他颜色
+    
 
     this.addSettingTab(new CalendarSettingsTab(this.app, this));
 

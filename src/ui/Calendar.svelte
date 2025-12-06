@@ -4,7 +4,7 @@
   import type { Moment } from "moment";
   import {
     Calendar as CalendarBase,
-    ICalendarSource,
+    type ICalendarSource,
     configureGlobalMomentLocale,
   } from "obsidian-calendar-ui";
   import { onDestroy } from "svelte";

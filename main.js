@@ -901,6 +901,12 @@ const defaultSettings = Object.freeze({
     weeklyNoteTemplate: "",
     weeklyNoteFolder: "",
     localeOverride: "system-default",
+    // ... 其他默认值
+    moodColorHappy: "#FFB7B2",
+    moodColorSad: "#A0C4FF",
+    moodColorNeutral: "#B5EAD7",
+    moodColorAngry: "#FF6B6B",
+    moodColorEnergetic: "#FDFFB6",
 });
 function appHasPeriodicNotesPluginLoaded() {
     var _a, _b;
@@ -912,6 +918,18 @@ class CalendarSettingsTab extends require$$0.PluginSettingTab {
     constructor(app, plugin) {
         super(app, plugin);
         this.plugin = plugin;
+    }
+    // 🎨 辅助函数：把设置里的颜色应用到 CSS 变量
+    applyMoodColors() {
+        const { moodColorHappy, moodColorSad, moodColorNeutral, moodColorAngry, moodColorEnergetic } = this.plugin.options;
+        // 获取文档根节点
+        const root = document.body;
+        // 设置 CSS 变量
+        root.style.setProperty('--mood-color-happy', moodColorHappy);
+        root.style.setProperty('--mood-color-sad', moodColorSad);
+        root.style.setProperty('--mood-color-neutral', moodColorNeutral);
+        root.style.setProperty('--mood-color-angry', moodColorAngry);
+        root.style.setProperty('--mood-color-energetic', moodColorEnergetic);
     }
     display() {
         this.containerEl.empty();
@@ -961,6 +979,57 @@ class CalendarSettingsTab extends require$$0.PluginSettingTab {
                     old.maxDots = value;
                     return old;
                 });
+            });
+        });
+        this.containerEl.createEl("h3", { text: "🎨 心情配色 (Mood Colors)" });
+        // 😊 开心颜色
+        new require$$0.Setting(this.containerEl)
+            .setName("开心/哈哈哈哈 (Happy)")
+            .addColorPicker((color) => {
+            color.setValue(this.plugin.options.moodColorHappy)
+                .onChange(async (value) => {
+                this.plugin.writeOptions((old) => { old.moodColorHappy = value; return old; });
+                this.applyMoodColors(); // 实时预览：一改颜色马上生效
+            });
+        });
+        // 😔 难过颜色
+        new require$$0.Setting(this.containerEl)
+            .setName("难过/宝宝不开心 (Sad)")
+            .addColorPicker((color) => {
+            color.setValue(this.plugin.options.moodColorSad)
+                .onChange(async (value) => {
+                this.plugin.writeOptions((old) => { old.moodColorSad = value; return old; });
+                this.applyMoodColors();
+            });
+        });
+        // 😐 平静颜色
+        new require$$0.Setting(this.containerEl)
+            .setName("平静/心如止水 (Neutral)")
+            .addColorPicker((color) => {
+            color.setValue(this.plugin.options.moodColorNeutral)
+                .onChange(async (value) => {
+                this.plugin.writeOptions((old) => { old.moodColorNeutral = value; return old; });
+                this.applyMoodColors();
+            });
+        });
+        // 😡 生气颜色
+        new require$$0.Setting(this.containerEl)
+            .setName("生气/特么的 (Angry)")
+            .addColorPicker((color) => {
+            color.setValue(this.plugin.options.moodColorAngry)
+                .onChange(async (value) => {
+                this.plugin.writeOptions((old) => { old.moodColorAngry = value; return old; });
+                this.applyMoodColors();
+            });
+        });
+        // ⚡ 活力颜色
+        new require$$0.Setting(this.containerEl)
+            .setName("活力/冲冲冲 (Energetic)")
+            .addColorPicker((color) => {
+            color.setValue(this.plugin.options.moodColorEnergetic)
+                .onChange(async (value) => {
+                this.plugin.writeOptions((old) => { old.moodColorEnergetic = value; return old; });
+                this.applyMoodColors();
             });
         });
         // ========================
@@ -4366,9 +4435,14 @@ async function getDotsForDailyNote(dailyNote) {
 const wordCountSource = {
     getDailyMetadata: async (date) => {
         const file = mainExports.getDailyNote(date, get_store_value(dailyNotes));
+        // 1. 获取小圆点 (原逻辑)
         const dots = await getDotsForDailyNote(file);
+        // 2. 【新增】获取心情 CSS 类
+        const classes = getMoodClass(file);
+        // 3. 返回给日历
         return {
             dots,
+            classes, // <--- 把这个加进去！
         };
     },
     getWeeklyMetadata: async (date) => {
@@ -4379,6 +4453,40 @@ const wordCountSource = {
         };
     },
 };
+/**
+ * 读取日记的 Frontmatter，判断心情，并返回对应的 CSS 类名
+ */
+function getMoodClass(file) {
+    if (!file)
+        return [];
+    // 1. 获取文件的元数据缓存
+    const cache = window.app.metadataCache.getFileCache(file);
+    // 2. 如果没有 Frontmatter (文档属性)，直接返回空
+    if (!cache || !cache.frontmatter)
+        return [];
+    // 3. 读取 'mood' 字段
+    const mood = cache.frontmatter.mood;
+    if (!mood)
+        return [];
+    // 4. 简单的关键词匹配 (您可以根据喜好自由添加！)
+    // 支持中文和英文
+    if (mood === '开心' || mood === 'happy' || mood === 'good' || mood === '快乐' || mood === '棒极了' || mood === '非常好' || mood === '超级棒' || mood === '美滋滋' || mood === '妥妥的' || mood === '兴奋' || mood === '激动' || mood === '满足' || mood === '幸福' || mood === '喜悦') {
+        return ['mood-happy'];
+    }
+    if (mood === '难过' || mood === 'sad' || mood === 'bad' || mood === '宝宝不开心' || mood === '不开心' || mood === '伤心' || mood === '心情不好' || mood === '郁闷' || mood === '崩溃' || mood === '难受' || mood === '惨了') {
+        return ['mood-sad'];
+    }
+    if (mood === '平静' || mood === 'neutral' || mood === 'normal' || mood === '一般' || mood === '还行' || mood === '马马虎虎' || mood === '凑合' || mood === '无感' || mood === '淡定' || mood === '随意' || mood === '无所谓' || mood === '中立' || mood === '普通') {
+        return ['mood-neutral'];
+    }
+    if (mood === '生气' || mood === 'angry' || mood === 'mad' || mood === 'terrible' || mood === '特么的' || mood === '他妈的' || mood === '操你妈' || mood === '去你妈的' || mood === '滚你妈的') {
+        return ['mood-angry'];
+    }
+    if (mood === '活力' || mood === 'energetic' || mood === '冲' || mood === '冲冲冲' || mood === '加油' || mood === '加把劲' || mood === '奋斗' || mood === '努力' || mood === '拼搏') {
+        return ['mood-energetic'];
+    }
+    return [];
+}
 
 class CalendarView extends require$$0.ItemView {
     constructor(leaf) {
@@ -4629,7 +4737,16 @@ class CalendarPlugin extends require$$0.Plugin {
             name: "Reveal active note",
             callback: () => this.view.revealActiveNote(),
         });
+        // 等待设置加载完
         await this.loadOptions();
+        // 🎨 初始化心情颜色
+        // 因为 main.ts 里可能拿不到 SettingsTab 的实例，我们直接手动设置一次，或者更优雅地：
+        // 在 main.ts 里添加一个简单的 apply 函数
+        const root = document.body;
+        root.style.setProperty('--mood-color-happy', this.options.moodColorHappy);
+        root.style.setProperty('--mood-color-sad', this.options.moodColorSad);
+        root.style.setProperty('--mood-color-neutral', this.options.moodColorNeutral);
+        // ... 其他颜色
         this.addSettingTab(new CalendarSettingsTab(this.app, this));
         if (this.app.workspace.layoutReady) {
             this.initLeaf();

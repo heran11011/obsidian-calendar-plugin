@@ -9,3 +9,42 @@
 .settings-banner h4 {
   margin: 0;
 }
+/* --- 🌈 心情染色 (变量版) --- */
+
+/* 基础样式 */
+.day.mood-happy, .day.mood-sad, .day.mood-neutral, .day.mood-angry, .day.mood-energetic {
+    transition: background-color 0.3s ease;
+    color: #fff !important;
+}
+
+/* 😊 开心 */
+.day.mood-happy {
+    /* 如果用户没设置，默认使用 #FFB7B2 */
+    background-color: var(--mood-color-happy, #FFB7B2) !important;
+    border: 2px solid var(--mood-color-happy, #FFB7B2) !important;
+}
+
+/* 😔 难过 */
+.day.mood-sad {
+    background-color: var(--mood-color-sad, #A0C4FF) !important;
+    border: 2px solid var(--mood-color-sad, #A0C4FF) !important;
+}
+
+/* 😐 平静 */
+.day.mood-neutral {
+    background-color: var(--mood-color-neutral, #B5EAD7) !important;
+    border: 2px solid var(--mood-color-neutral, #B5EAD7) !important;
+}
+
+/* 😡 生气 */
+.day.mood-angry {
+    background-color: var(--mood-color-angry, #FF6B6B) !important;
+    border: 2px solid var(--mood-color-angry, #FF6B6B) !important;
+}
+
+/* ⚡ 活力 */
+.day.mood-energetic {
+    background-color: var(--mood-color-energetic, #FDFFB6) !important;
+    color: #555 !important;
+    border: 2px solid var(--mood-color-energetic, #E6E88B) !important;
+}
